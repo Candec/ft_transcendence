@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Achievement {
+  id              Int       @id @default(autoincrement())
+  title           String    @unique
+  // obtainedAt      DateTime
+
+  achieved        User[]
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  email           String    @unique
+  hashedPassword  String
+
+// TODO get these values from 42 API
+  firstName       String?
+  lastName        String?
+
+  nickName        String?    @unique
+
+  ladderLevel     Int       @default(0)
+  achievements    Achievement[]
+
+  gamesAsPlayer1  Game[]    @relation(name: "player1")
+  gamesAsPlayer2  Game[]    @relation(name: "player2")
+
+  @@map("users")
+}
+
+model Game {
+  id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  player1Id     Int
+  player1       User      @relation(name: "player1", fields: [player1Id], references: [id])
+  player1Score  Int
+
+  player2Id     Int
+  player2       User      @relation(name: "player2", fields: [player2Id], references: [id])
+  player2Score  Int
+
+  @@map("games")
+}

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "users" ALTER COLUMN "ladderLevel" SET DEFAULT 0,
+ALTER COLUMN "nickName" DROP NOT NULL;
